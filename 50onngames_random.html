@@ -379,17 +379,6 @@
         timer3 = setInterval(timeleft, 1000);
         let score = 0;
         $("#text-score").text(score);
-        let loadingTxt = 0;
-        $("img").css({ display: "none" });
-        let timer4 = setInterval(() => {
-          loadingBar.set(loadingTxt);
-          if (loadingTxt >= 100) {
-            $("img").fadeIn();
-            $("#loadingBar").fadeOut();
-          } else {
-            loadingTxt++;
-          }
-        }, 30);
       });
     </script>
   </body>
