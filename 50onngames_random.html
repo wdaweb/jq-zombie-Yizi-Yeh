@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/loading-bar.css" />
     <title>Document</title>
     <style>
       body {
@@ -79,16 +80,80 @@
         color: rgb(150, 111, 111);
         font-weight: bold;
       }
+
+      /* loadingbar圖片設定 */
+      .ldBar {
+        /* 若使用後無作用則可能有預設，使用!important屬性 */
+        width: 500px !important;
+        height: 500px !important;
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translate(-50%);
+      }
+
+      /*loading bar 百分比文字*/
+      .ldBar-label {
+        color: rgb(241, 232, 234);
+        font-size: 2rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* bar 百分比單位，預設 */
+      .ldBar-label::after {
+        content: "%";
+        font-size: "2rem";
+      }
     </style>
   </head>
   <body>
-    <div id="goalcards"></div>
-    <div id="game"></div>
-    <input type="button" value="START" id="start-btn" />
-    <p>分數:<span id="text-score">0</span></p>
-    <p>時間:<span id="text-time">30</span></p>
+    <div id="loadingBar" class="ldBar"></div>
+    <div class="outer">
+      <div id="goalcards"></div>
+      <div id="game"></div>
+      <input type="button" value="START" id="start-btn" />
+      <p>分數:<span id="text-score">0</span></p>
+      <p>時間:<span id="text-time">30</span></p>
+    </div>
     <script src="/jquery-3.5.1.min.js"></script>
+    <script src="loading-bar.js"></script>
     <script>
+      // 新建ldBar實體 / ('實體名稱' / '作用域' / 屬性)
+      const loadingBar = new ldBar("#loadingBar", {
+        //  值的設定---------
+        value: 0, //目前值
+        min: 0, //最小值
+        max: 100, //最大值
+        duration: "1",
+        // 使用自定義圖片
+        img: "./mark_network_status_benkyouchu.png",
+        "img-size": "100,100",
+        type: "fill",
+        // btt 下到上
+        // ttb 上到下
+        // ltr 左至右
+        // rtl 右至左
+        "fill-dir": "btt",
+        "fill-background": "tan",
+        "fill-background-extrude": 1,
+      });
+
+      let loadingText = 0;
+      $(".outer").hide();
+      $(window).on("load", function () {
+        let loading = setInterval(() => {
+          // set方法 屬性選擇器
+          loadingBar.set(loadingText);
+          if (loadingText >= 100) {
+            $(".outer").fadeIn();
+            $("#loadingBar").fadeOut();
+          }
+          loadingText++;
+        }, 50);
+      });
 
       const goalcards = [
         {
@@ -316,6 +381,17 @@
         timer3 = setInterval(timeleft, 1000);
         let score = 0;
         $("#text-score").text(score);
+        let loadingTxt = 0;
+        $("img").css({ display: "none" });
+        let timer4 = setInterval(() => {
+          loadingBar.set(loadingTxt);
+          if (loadingTxt >= 100) {
+            $("img").fadeIn();
+            $("#loadingBar").fadeOut();
+          } else {
+            loadingTxt++;
+          }
+        }, 30);
       });
     </script>
   </body>
